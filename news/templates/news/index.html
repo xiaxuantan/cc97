@@ -1,0 +1,80 @@
+{% extends "news/base.html" %}
+
+{% block news %}
+
+    {#    <table class="table table-bordered">#}
+    {##}
+    {#        <tbody>#}
+    {##}
+    {#        <tr class="danger text-center" style="font-size: large; font-weight: bold;">#}
+    {#            <td><a style="color: darkred;" href="categories/all">全部</a></td>#}
+    {#            <td><a style="color: darkred;" href="">体育</a></td>#}
+    {#            <td><a style="color: darkred;" href="">财经</a></td>#}
+    {#            <td><a style="color: darkred;" href="">娱乐</a></td>#}
+    {#            <td><a style="color: darkred;" href="">科技</a></td>#}
+    {#            <td><a style="color: darkred;" href="">教育</a></td>#}
+    {##}
+    {#        </tr>#}
+    {#        </tbody>#}
+    {#    </table>#}
+
+    {#    <h4>今日最火</h4> <br />#}
+    <table class="table table-striped">
+        <tbody>
+        {% for article in hot %}
+            <tr>
+                <td class="col-sm-6"><a href="/news/{{ article.id }}">{{ article.title }}</a></td>
+                <td class="col-sm-3">{{ article.publishDate|date:'Y-m-d G:i:s' }}</td>
+                <td class="col-sm-1">
+                    {% if article.tag == 'sports' %}
+                        <a href="/categories/sports">体育</a>
+                    {% elif article.tag == 'business' %}
+                        <a href="/categories/business">财经</a>
+                    {% elif article.tag == 'ent' %}
+                        娱乐
+                    {% elif article.tag == 'tech' %}
+                        科技
+                    {% elif article.tag == 'edu' %}
+                        教育
+                    {% endif %}
+                </td>
+                <td class="col-sm-2 text-center">{{ article.scanNumber }}
+                    {% if forloop.counter <= 3 %}
+                        <span class="glyphicon glyphicon-fire" style="color: red;"></span>
+                    {% endif %}
+                </td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+
+    </table>
+
+
+
+
+{% endblock %}
+
+{% block recommand %}
+
+    <div class="col-sm-12"> <hr /> </div>
+
+    <div class="col-sm-12">
+        <h4 class="text-center">
+            最新新闻
+        </h4>
+
+        <ul class="list-group">
+            {% for article in recent %}
+                <li class="list-group-item">
+                    {% if forloop.counter <= 3 %}
+                        <span class="badge">新</span>
+                    {% endif %}
+                    <a href="/news/{{ article.id }}">{{ article.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+
+    </div>
+
+{% endblock %}

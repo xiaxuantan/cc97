@@ -1,0 +1,70 @@
+{% extends 'news/base.html' %}
+
+{% block subTitle %}
+    <small>
+        {% if tag == 'all' %}
+            所有
+        {% elif tag == 'sports' %}
+            体育
+        {% elif tag == 'business' %}
+            财经
+        {% elif tag == 'ent' %}
+            娱乐
+        {% elif tag == 'tech' %}
+            科技
+        {% elif tag == 'edu' %}
+            教育
+        {% endif %}
+    </small>
+{% endblock %}
+
+
+{% block news %}
+    <table class="table table-striped">
+        <tbody>
+        {% for article in thisPage %}
+            <tr>
+                <td class="col-sm-6"><a href="/news/{{ article.id }}">{{ article.title }}</a></td>
+                <td class="col-sm-3">{{ article.publishDate|date:'Y-m-d G:i:s' }}</td>
+                <td class="col-sm-1">{{ article.source }}</td>
+                <td class="col-sm-2">{{ article.scanNumber }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="col-sm-6 col-sm-offset-3">
+
+        <ul class="pagination">
+            <li><a href="?page={% if page <= 5 %}1{% else %}{{ page|add:-5 }}{% endif %}">&laquo;</a></li>
+            <li {% if page == 1 %} class="active" {% endif %}>
+                <a href="?page={% if page <= 2 %}1{% else %}{{ page|add:-2 }}{% endif %}">
+                    {% if page <= 2 %}1{% else %}{{ page|add:-2 }}{% endif %}
+                </a>
+            </li>
+            <li {% if page == 2 %} class="active" {% endif %}>
+                <a href="?page={% if page <= 2 %}2{% else %}{{ page|add:-1 }}{% endif %}">
+                    {% if page <= 2 %}2{% else %}{{ page|add:-1 }}{% endif %}
+                </a>
+            </li>
+
+            <li {% if page > 2 %} class="active" {% endif %}>
+                <a href="?page={% if page <= 2 %}3{% else %}{{ page }}{% endif %}">
+                    {% if page <= 2 %}3{% else %}{{ page }}{% endif %}
+                </a>
+            </li>
+            <li>
+                <a href="?page={% if page <= 2 %}4{% else %}{{ page|add:1 }}{% endif %}">
+                    {% if page <= 2 %}4{% else %}{{ page|add:1 }}{% endif %}
+                </a>
+            </li>
+            <li>
+                <a href="?page={% if page <= 2 %}5{% else %}{{ page|add:2 }}{% endif %}">
+                    {% if page <= 2 %}5{% else %}{{ page|add:2 }}{% endif %}
+                </a>
+            </li>
+            <li><a href="?page={% if page <= 2 %}8{% else %}{{ page|add:5 }}{% endif %}">&raquo;</a></li>
+        </ul>
+
+    </div>
+
+{% endblock %}

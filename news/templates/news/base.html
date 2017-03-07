@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>CC97</title>
+    <link rel="stylesheet" href="/statics/css/bootstrap.min.css">
+    <script type="text/javascript" src="/statics/js/jquery-3.0.0.min.js"></script>
+    <script type="text/javascript" src="/statics/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+
+    {#    这是标题#}
+    <div class="page-header">
+
+        <h1><a href="/" style="text-decoration: none;" class="text-info">CC97大杂烩</a>
+            {% block subTitle %}<small>首页</small>{% endblock %}
+        </h1>
+
+    </div>
+
+
+    <div class="col-sm-8">
+
+        {% block navi %}
+            <div class="col-sm-12 btn-group" style="margin-bottom: 15px; font-size: large;">
+                <button onclick="location='/categories/all'" type="button" class="col-sm-2 btn btn-lg {% if tag == 'all' %} btn-primary {%  else %} btn-info {% endif %}">所有</button>
+                <button onclick="location='/categories/sports'" type="button" class="col-sm-2 btn btn-lg {% if tag == 'sports' %} btn-primary {%  else %} btn-info {% endif %}">体育</button>
+                <button onclick="location='/categories/business'" type="button" class="col-sm-2 btn btn-lg {% if tag == 'business' %} btn-primary {%  else %} btn-info {% endif %}">财经</button>
+                <button onclick="location='/categories/ent'" type="button" class="col-sm-2 btn btn-lg {% if tag == 'ent' %} btn-primary {%  else %} btn-info {% endif %}">娱乐</button>
+                <button onclick="location='/categories/tech'" type="button" class="col-sm-2 btn btn-lg {% if tag == 'tech' %} btn-primary {%  else %} btn-info {% endif %}">技术</button>
+                <button onclick="location='/categories/edu'" type="button" class="col-sm-2 btn btn-lg {% if tag == 'edu' %} btn-primary {%  else %} btn-info {% endif %}">教育</button>
+            </div>
+        {% endblock %}
+
+        {% block news %}
+
+
+
+        {% endblock %}
+
+
+
+    </div>
+
+
+
+
+    <div class="col-sm-4">
+        {% if reader %}
+
+            <div class="text-center">
+                <h4>
+                    {{ reader.readerName }}
+                </h4>
+
+                <div class="col-sm-8 col-sm-offset-2">
+
+                    <img src="/statics/img/icons/{{reader.icon}}" width="150px" height="150px">
+                </div>
+
+
+                <div class="col-sm-12" style="margin-top: 15px;">
+                    <div class="col-sm-4">
+                        <a href="/reader/space/{{ reader.readerName }}" class="btn btn-block btn-info ">
+                            <span class="glyphicon glyphicon-user"></span>空间
+                        </a>
+                    </div>
+                    <div class="col-sm-4">
+                        <a href="/reader/profile" class="btn btn-block btn-info">
+                            <span class="glyphicon glyphicon-edit"></span>编辑
+                        </a>
+                    </div>
+                    <div class="col-sm-4">
+                        <a href="/reader/logout" class="btn btn-block btn-info">
+                            <span class="glyphicon glyphicon-log-out"></span>登出
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-sm-8 col-sm-offset-2" style="margin-top: 25px;">
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="60"
+                             aria-valuemin="0" aria-valuemax="100" style="width: {{ reader.levelRatio }}%;">
+                            <span class="sr-only"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <div style="font-weight: bold;"> Lv. {{ reader.level }}</div>
+                    </div>
+                </div>
+
+            </div>
+
+        {% else %}
+
+
+            <div class="text-center">
+                <h4>
+                    您还未登陆
+                </h4>
+            </div>
+
+            <div class="col-sm-6 col-sm-offset-3" style="margin-top: 10px;">
+                <a href="/reader/login" class="btn btn-block btn-primary">登录</a>
+            </div>
+
+            <div class="col-sm-6 col-sm-offset-3" style="margin-top: 10px;">
+                <a href="/reader/register" class="btn btn-block btn-primary">注册</a>
+            </div>
+
+
+        {% endif %}
+
+        {% block recommand %}
+
+        {% endblock %}
+
+    </div>
+
+</div>
+
+</body>
+</html>

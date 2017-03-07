@@ -1,0 +1,104 @@
+{% extends "news/base.html" %}
+
+{% block subTitle %}
+    <small>
+        新闻
+    </small>
+{% endblock %}
+
+{#取消导航#}
+{% block navi %}
+{% endblock %}
+
+{% block news %}
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $("#submitComment").click(function () {
+                if ($('#newComment').val().length<=10) {
+                    alert('评论不够长，最少10个字符');
+                    return;
+                }
+                $.ajax({
+                    url: 'submitComment',
+                    type: "POST",
+                    data: {
+                        readerName: "{{ reader.readerName }}",
+                        newsId: {{ newsId }},
+                        text: $('#newComment').val(),
+                    },
+                    success: function (res) {
+                        window.location.reload();
+                    },
+                    dataType:'json'
+                });
+            })
+        })
+    </script>
+
+    <h3 class="text-center">{{ news.title }}</h3>
+    <div class="text-center" style="color: grey;">{{ news.publishDate | date:'Y-m-d G:i:s' }}</div>
+    <br />
+    <div class="media-body">
+        {% if not news.imgLink == '' %}
+            <div class="col-sm-12 text-center" style="margin-bottom: 20px;">
+                <img alt="图片已经过期或加载失败" src="{{ news.imgLink }}" />
+            </div>
+        {% endif %}
+
+        {% for paragraph in paragraphs %}
+            <p>{{ paragraph }}</p>
+        {% endfor %}
+    </div>
+    <div class="text-right"><a href="{{ news.link }}" target="_blank">原文链接</a></div>
+    <div class="text-right" style="color: grey; margin-top: 5px;">浏览量：{{ news.scanNumber }} 来源：{{ news.source }}</div>
+
+    <hr />
+
+    <h3>评论</h3>
+    <br />
+    {% if comments %}
+        <div class="col-sm-8" id="commentList">
+
+            {% for comment in comments %}
+
+                <div> <p>{{ comment.readerName }} -- {{ comment.commentDate | date:'Y-m-d G:i:s'}} -- # {{ comment.commentNo }}</p></div>
+                <div> {{ comment.content }} </div>
+                <hr />
+            {% endfor %}
+        </div>
+
+    {% endif %}
+
+    <div class="col-sm-12 text-center">总数：{{ news.commentNo }}</div>
+    <br />
+
+
+
+    {% if reader %}
+        <div class="col-sm-12">
+            <form role="form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name">发表新的评论</label>
+                    <textarea class="form-control" id="newComment" name="newComment" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <div class="input-group col-sm-offset-5 col-sm-2">
+                        <button type="button" id="submitComment" name="submitComment" class="btn btn-block btn-primary">发表</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    {% endif %}
+
+
+{% endblock %}
+
+{#{% block recommand %}#}
+{##}
+{#    推荐模块#}
+{##}
+{#{% endblock %}#}

@@ -1,0 +1,57 @@
+{% extends "reader/base.html" %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-sm-4 col-sm-offset-4 form-box">
+
+
+            <h3 class="form-signin-heading">登录
+                {% if not errMsg == "" %}
+                    <small style="color: red;">
+                        {{ errMsg }}
+                    </small>
+                {% endif %}
+            </h3>
+
+            <hr />
+
+            <form class="form-horizontal" method="post" action="/reader/loginCheck" role="form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="readerName" class=" col-sm-3 control-label">用户名</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" name="readerName" id="readerName" placeholder="Please Enter Username">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="col-sm-3 control-label">密码</label>
+                    <div class="col-sm-9">
+                        <input type="password" class="form-control" name="password" id="password" placeholder="Please Enter Password">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-4">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox">记住我
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-4 col-sm-4">
+                        <button type="submit" class="btn btn-block btn-primary">确定</button>
+                    </div>
+                    <div class="col-sm-4">
+                        <a href="" style="font-size: medium;">忘记密码</a>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
+

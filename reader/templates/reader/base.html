@@ -1,0 +1,33 @@
+{#<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css"/>#}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>CC97</title>
+    <link rel="stylesheet" href="/statics/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/statics/css/bootstrap-datetimepicker.min.css" media="screen">
+    <script type="text/javascript" src="/statics/js/jquery-3.0.0.min.js"></script>
+    <script type="text/javascript" src="/statics/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/statics/js/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="/statics/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+</head>
+
+<body>
+
+<div class="container">
+
+    {#    这是标题#}
+    <div class="page-header">
+        <h1><a href="/" style="text-decoration: none;" class="text-info">CC97大杂烩</a>
+            <small>用户管理</small>
+        </h1>
+    </div>
+
+    {% block content %}
+    {% endblock %}
+
+</div>
+
+</body>
+</html>
