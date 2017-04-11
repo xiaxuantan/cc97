@@ -15,137 +15,148 @@ import re
 import json
 import os
 
-# class LoginForm(forms.Form):
-#     readerName = forms.CharField(max_length=100)
-#     password = forms.CharField(widget=forms.PasswordInput())
-#     rememberMe = forms.CheckboxInput()
-#
-#
-# class RegisterForm(forms.Form):
-#     readerName = forms.CharField(max_length=100)
-#     password = forms.CharField(widget=forms.PasswordInput())
-#     repeatPassword = forms.CharField(widget=forms.PasswordInput())
-#     email = forms.CharField()
-#
-# class UpdateProfileForm(forms.Form):
-#     gender = forms.CharField()
-#     birthday = forms.CharField(max_length=100)
-#
-# class UpdatePasswordForm(forms.Form):
-#     newPassword = forms.CharField(widget=forms.PasswordInput())
-#     repeatNewPassword = forms.CharField(widget=forms.PasswordInput())
-
-def login(request):
-    if 'readerName' in request.COOKIES:
-        return HttpResponseRedirect('/')
-    errMsg = request.GET.get('errMsg')
-    if errMsg != None:
-        return render(request, "reader/login.html", {'errMsg': errMsg})
-    else:
-        return render(request, "reader/login.html")
-
-
-def logout(request):
-    response = HttpResponseRedirect('/')
-    response.delete_cookie('readerName')
-    return response
-
-
-def loginCheck(request):
-    lf = forms.Form(request.POST)
-    if lf.is_valid():
-        readerName = lf.data['readerName']
-        password = lf.data['password']
-
-        reader = Reader.objects.filter(readerName=readerName,password=password)
-        if len(reader)==0:
-            return HttpResponseRedirect("login?errMsg=Wrong Username Or Password")
-
-        response = HttpResponseRedirect('/')
-        response.set_cookie('readerName', readerName, 24*3600)
-        return response
-    else:
-        return HttpResponseRedirect("login?errMsg=Missing Username Or Password")
-
-
-def registerCheck(request):
-    rf = forms.Form(request.POST)
-    #防止直接通过url访问
-    if rf.is_valid() and 'readerName' in rf.data:
-
-        errMsg = ""
-        readerName = rf.data['readerName']
-        password = rf.data['password']
-        repeatPassword = rf.data['repeatPassword']
-        email = rf.data['email']
-
-        pattern = re.compile(r'[0-9a-zA-Z.]+@[0-9a-zA-Z.]+?com')
-
-        if len(readerName)<3:
-            errMsg = "Username Too Short"
-        elif password!=repeatPassword:
-            errMsg = "Password Unmatched"
-        elif len(password)<6:
-            errMsg = "Password Too Short"
-        elif pattern.match(email)==None:
-            errMsg = "Invaild Email"
-
-        #if errMsg != ""
-        # 密码和用户是否能正常注册 用mysql
-
-        check = Reader.objects.filter(readerName=readerName)
-
-        if len(check)!=0:
-            errMsg="Username exists"
-
-        if errMsg=="":
-
-            newReader = Reader(readerName=readerName,
-                               password=password,
-                               email=email,
-                               registerDate=datetime.now(), #.strftime('%Y-%m-%d %H:%M:%S')
-                               birthday=date(1900,01,01))
-            newReader.save()
-
+# 登入登出的restful API
+# get 代表获取 session
+# post 代表创建 session
+# delete 代表删除 session 登出
+@csrf_exempt
+def session(request):
+    if request.method == 'GET':
+        if 'readerName' in request.COOKIES:
+            return HttpResponseRedirect('/')
+        errMsg = request.GET.get('errMsg')
+        if errMsg != None:
+            return render(request, "reader/login.html", {'errMsg': errMsg})
+        else:
+            return render(request, "reader/login.html")
+    elif request.method == 'POST':
+        lf = forms.Form(request.POST)
+        if lf.is_valid():
+            readerName = lf.data['readerName']
+            password = lf.data['password']
+            reader = Reader.objects.filter(readerName=readerName, password=password)
+            if len(reader) == 0:
+                return HttpResponseRedirect("session?errMsg=Wrong Username Or Password")
             response = HttpResponseRedirect('/')
             response.set_cookie('readerName', readerName, 24 * 3600)
             return response
         else:
-            #return render_to_response('reader/register.html', {'errMsg': errMsg})
-            return HttpResponseRedirect("register?errMsg="+errMsg)
+            return HttpResponseRedirect("session?errMsg=Missing Username Or Password")
+    elif request.method == 'DELETE':
+        print '123'
+        #response = HttpResponseRedirect('/')
+        response = HttpResponse()
+        response.delete_cookie('readerName')
+        return response
 
-    else:
-        return HttpResponseRedirect("register?errMsg=Information Missing")
+# 登入登出的restful API
+# get 代表获取 session
+# post 代表创建 session
+# delete 代表删除 session 登出
+@csrf_exempt
+def fresher(request):
+    if request.method == 'GET':
+        if 'readerName' in request.COOKIES:
+            return HttpResponseRedirect('/')
+        errMsg = request.GET.get('errMsg')
+        if errMsg != None:
+            return render(request, "reader/register.html", {'errMsg': errMsg})
+        else:
+            return render(request, "reader/register.html")
+    if request.method == 'POST':
+        rf = forms.Form(request.POST)
+        # 防止直接通过url访问
+        if rf.is_valid() and 'readerName' in rf.data:
 
+            errMsg = ""
+            readerName = rf.data['readerName']
+            password = rf.data['password']
+            repeatPassword = rf.data['repeatPassword']
+            email = rf.data['email']
 
-def register(request):
-    if 'readerName' in request.COOKIES:
-        return HttpResponseRedirect('/')
-    errMsg = request.GET.get('errMsg')
-    if errMsg!=None:
-        return render(request, "reader/register.html", {'errMsg': errMsg})
-    else:
-        return render(request, "reader/register.html")
+            pattern = re.compile(r'[0-9a-zA-Z.]+@[0-9a-zA-Z.]+?com')
 
+            if len(readerName) < 3:
+                errMsg = "Username Too Short"
+            elif password != repeatPassword:
+                errMsg = "Password Unmatched"
+            elif len(password) < 6:
+                errMsg = "Password Too Short"
+            elif pattern.match(email) == None:
+                errMsg = "Invaild Email"
+
+            # if errMsg != ""
+            # 密码和用户是否能正常注册 用mysql
+
+            check = Reader.objects.filter(readerName=readerName)
+
+            if len(check) != 0:
+                errMsg = "Username exists"
+
+            if errMsg == "":
+
+                newReader = Reader(readerName=readerName,
+                                   password=password,
+                                   email=email,
+                                   registerDate=datetime.now(),  # .strftime('%Y-%m-%d %H:%M:%S')
+                                   birthday=date(1900, 01, 01))
+                newReader.save()
+
+                response = HttpResponseRedirect('/')
+                response.set_cookie('readerName', readerName, 24 * 3600)
+                return response
+            else:
+                # return render_to_response('reader/register.html', {'errMsg': errMsg})
+                return HttpResponseRedirect("fresher?errMsg=" + errMsg)
+
+        else:
+            return HttpResponseRedirect("fresher?errMsg=Information Missing")
 
 def profile(request):
-    if 'readerName' not in request.COOKIES:
-        return HttpResponseRedirect('login')
-    else:
-        reader = Reader.objects.filter(readerName=request.COOKIES['readerName']).first()
-        if reader == None:
-            return HttpResponseRedirect('login')
-        else:
-            errMsg = request.GET.get('errMsg')
-            if errMsg != None:
-                return render(request, 'reader/profile.html', {'reader': reader, 'errMsg': errMsg})
-            else:
-                return render(request, 'reader/profile.html', {'reader':reader})
 
+    if request.method == 'GET':
+
+        if 'readerName' not in request.COOKIES:
+            return HttpResponseRedirect('session')
+        else:
+            reader = Reader.objects.filter(readerName=request.COOKIES['readerName']).first()
+            if reader == None:
+                return HttpResponseRedirect('session')
+            else:
+                errMsg = request.GET.get('errMsg')
+                if errMsg != None:
+                    return render(request, 'reader/profile.html', {'reader': reader, 'errMsg': errMsg})
+                else:
+                    return render(request, 'reader/profile.html', {'reader':reader})
+
+    elif request.method == 'PUT':
+        if 'readerName' not in request.COOKIES:
+            return HttpResponseRedirect('session')
+        else:
+            upf = forms.Form(request.POST)
+
+            newPassword = upf.data['newPassword']
+            repeatNewPassword = upf.data['repeatNewPassword']
+
+            errMsg = ""
+
+            if newPassword != repeatNewPassword:
+                errMsg = "Password Unmatched"
+            elif len(newPassword) < 6:
+                errMsg = "Password Too Short"
+
+            if errMsg == "":
+                reader = Reader.objects.filter(readerName=request.COOKIES['readerName']).first()
+                reader.password = newPassword
+                reader.save()
+                return HttpResponseRedirect('profile')
+            else:
+                return HttpResponseRedirect("profile?errMsg=" + errMsg)
 
 def profileUpdate(request):
+
     if 'readerName' not in request.COOKIES:
-        return HttpResponseRedirect('login')
+        return HttpResponseRedirect('session')
     else:
         upf = forms.Form(request.POST)
         reader = Reader.objects.filter(readerName=request.COOKIES['readerName']).first()
@@ -158,7 +169,7 @@ def profileUpdate(request):
 
 def passwordUpdate(request):
     if 'readerName' not in request.COOKIES:
-        return HttpResponseRedirect('login')
+        return HttpResponseRedirect('session')
     else:
         upf = forms.Form(request.POST)
 
@@ -223,7 +234,7 @@ def uploadIcon(request):
 
 def updateIcon(request):
     if 'readerName' not in request.COOKIES:
-        return HttpResponseRedirect('login')
+        return HttpResponseRedirect('session')
     else:
         form = forms.Form(request.POST)
 
@@ -239,4 +250,4 @@ def updateIcon(request):
 
 
 def space(request, readerName):
-    return HttpResponse(readerName+"的空间，等待开放")
+    return HttpResponse(readerName+"'s Space... Please wait")

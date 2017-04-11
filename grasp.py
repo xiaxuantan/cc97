@@ -172,5 +172,4 @@ def grasp_guokr_tech():
         link = rawLink.attr['href']
         print(link)
 
-
-grasp_guokr_tech()
+grasp_hupu()

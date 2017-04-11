@@ -8,6 +8,23 @@
     <script type="text/javascript" src="/statics/js/bootstrap.min.js"></script>
 </head>
 <body>
+
+
+{# 由于html不支持超链接 method=delete 只好加入ajax #}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#log-out-hyperlink").click(function () {
+            $.ajax({
+                url: '/reader/session',
+                type: "DELETE",
+                success: function (res) {
+                    window.location.href('/');
+                }
+            });
+        })
+    })
+</script>
+
 <div class="container">
 
     {#    这是标题#}
@@ -35,15 +52,9 @@
 
         {% block news %}
 
-
-
         {% endblock %}
 
-
-
     </div>
-
-
 
 
     <div class="col-sm-4">
@@ -72,7 +83,7 @@
                         </a>
                     </div>
                     <div class="col-sm-4">
-                        <a href="/reader/logout" class="btn btn-block btn-info">
+                        <a href="/reader/session" id="log-out-hyperlink" class="btn btn-block btn-info">
                             <span class="glyphicon glyphicon-log-out"></span>登出
                         </a>
                     </div>
@@ -102,11 +113,11 @@
             </div>
 
             <div class="col-sm-6 col-sm-offset-3" style="margin-top: 10px;">
-                <a href="/reader/login" class="btn btn-block btn-primary">登录</a>
+                <a href="/reader/session" class="btn btn-block btn-primary">登录</a>
             </div>
 
             <div class="col-sm-6 col-sm-offset-3" style="margin-top: 10px;">
-                <a href="/reader/register" class="btn btn-block btn-primary">注册</a>
+                <a href="/reader/fresher" class="btn btn-block btn-primary">注册</a>
             </div>
 
 
