@@ -68,3 +68,27 @@
     </div>
 
 {% endblock %}
+
+{% block recommand %}
+
+    <div class="col-sm-12"> <hr /> </div>
+
+    <div class="col-sm-12">
+        <h4 class="text-center">
+            新闻速递
+        </h4>
+
+        <ul class="list-group">
+            {% for article in recent %}
+                <li class="list-group-item">
+                    {% if forloop.counter <= 3 %}
+                        <span class="badge">新</span>
+                    {% endif %}
+                    <a href="/news/{{ article.id }}">{{ article.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+
+    </div>
+
+{% endblock %}

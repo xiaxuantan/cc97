@@ -14,22 +14,19 @@ from django.http import HttpResponse
 
 def index(request, attach):
 
-
-    print(attach)
-
     if attach!='':
         return HttpResponseRedirect('/')
 
     information = {}
 
     #每天最火的十条
-    information['hot'] = News.objects.filter(publishDate__gte=(datetime.now()-timedelta(hours=12,minutes=0,seconds=0)).strftime("%Y-%m-%d %H:%M:%S")).order_by('-scanNumber').all()[0:18]
+    # information['hot'] = News.objects.filter(publishDate__gte=(datetime.now()-timedelta(hours=12,minutes=0,seconds=0)).strftime("%Y-%m-%d %H:%M:%S")).order_by('-scanNumber').all()[0:18]
+    information['hot'] = News.objects.order_by('-scanNumber').all()[0:18]
 
     if 'readerName' in request.COOKIES:
         readerName = request.COOKIES['readerName']
         reader = Reader.objects.filter(readerName=readerName).first()
         information['reader']=reader
-    #else:
 
     # 最新发布的十条 标题截断
     recentTen = News.objects.order_by('-publishDate').all()[0:10]
@@ -61,6 +58,7 @@ def news(request, nid):
     #新闻的访问次数加以
     oNews.scanNumber += 1
     oNews.save()
+
     #给新闻内容分段
     paragraphs = oNews.content.split('||')
     #取出评论
@@ -68,6 +66,15 @@ def news(request, nid):
     information['paragraphs'] = paragraphs
     information['comments'] = comments
     information['news'] = oNews
+
+    # 推荐部分 标题截断
+    favorites = News.objects.filter(tag=oNews.tag).order_by('-publishDate').all()[0:20]
+    for recent in favorites:
+        if len(recent.title) >= 17:
+            recent.title = recent.title[0:17] + '...';
+    information['favorites'] = favorites
+    print information
+
     return render(request, "news/news.html", information)
 
 
@@ -132,8 +139,13 @@ def categories(request, category):
     elif category=='all':
         information['thisPage'] = News.objects.order_by('-publishDate').all()[
                                   20 * (page - 1):20 * page]
-
     else:
         return  HttpResponseRedirect('/categories/all')
 
+    # 最新发布的十条 标题截断
+    recentTen = News.objects.order_by('-publishDate').all()[0:10]
+    for recent in recentTen:
+        if len(recent.title) >= 17:
+            recent.title = recent.title[0:17] + '...';
+    information['recent'] = recentTen
     return render(request, 'news/category.html', information)

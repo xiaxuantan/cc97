@@ -17,7 +17,7 @@ def grasp_hupu():
 
     soup = BeautifulSoup(rawdata,'lxml')
     #print(type(soup))
-    headerHtml = str(soup.select('.focusNews')[0])
+    headerHtml = str(soup.select('.voiceList')[0])
 
     pattern = re.compile(r'https://voice[\w\./]*html')
 
@@ -58,21 +58,13 @@ def grasp_hupu():
             createTime = soup.find_all('meta', {'name':'weibo:webpage:create_at'},limit=3)[0].attrs['content']+":00"
             #2017-03-05 22:55
             title = soup.select('.headline')[0].string.strip()
-            scanNumber = int(soup.select('.btn-viewComment')[0].contents[-1].string.strip())*1234
-            #print(scanNumber)
-            #print(createTime)
-            #print(title)
+            scanNumber = (random.random() * 10000) + 12000
+            #scanNumber = int(soup.select('.btn-viewComment')[0].contents[-1].string.strip())*1234
+
             sql = "insert into news_news(title, content, publishDate, scanNumber, source, commentNo, link, tag, imgLink) " \
                   "values (\'%s\',\'%s\',\'%s\',%d,\'%s\',0,\'%s\',\'%s\',\'%s\');\n" \
                   % (title, passage, createTime, scanNumber, "虎扑", link, 'sports',imgLink)
-            # try:
-            #     # 执行sql语句
-            #     cursor.execute(sql)
-            #     # 提交到数据库执行
-            #     db.commit()
-            # except:
-            #     # 发生错误时回滚
-            #     db.rollback()
+
             try:
                 cursor.execute(sql)
             except:
@@ -96,10 +88,7 @@ def grasp_tencent_finance():
 
     mainHtml = str(mainHtml[0])
 
-    #print(mainHtml)
-
     pattern = re.compile(r'http://finance.qq.com/a/\d+/\d+\.htm')
-   # pattern = re.compile(r'https://voice[\w\./]*html')
 
     pageLinks = pattern.findall(mainHtml)
 
